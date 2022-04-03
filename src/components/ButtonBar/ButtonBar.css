@@ -1,0 +1,20 @@
+.heart-icon,
+.close-icon,
+.undo-icon {
+  width: 30px;
+}
+
+.button-div {
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+  margin: 20px 10px 10px 10px;
+}
+
+.button-bar-div {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 30px;
+}

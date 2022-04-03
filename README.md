@@ -1,3 +1,8 @@
+images from https://dog.ceo/dog-api/
+
+quotes from https://api.kanye.rest
+https://icanhazdadjoke.com/api
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -1,0 +1,31 @@
+.profile-pic {
+  object-fit: cover;
+  width: 230px;
+  height: 230px;
+}
+
+.name {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.age {
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.bio {
+  height: 50px;
+}
+
+.dog-card-body {
+  width: 800px;
+  margin: auto;
+}
+
+.content-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: space-between;
+}
