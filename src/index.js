@@ -8,9 +8,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const container = document.getElementById("root");
 const root = createRoot(container);
 const app = (
-  <StrictMode>
-    <App />
-  </StrictMode>
+  // <StrictMode>
+  <App />
+  // </StrictMode>
 );
 
 root.render(app);

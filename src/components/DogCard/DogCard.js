@@ -9,18 +9,24 @@ const DogCard = (props) => {
       <Card.Body>
         <Row>
           <Col>
-            <img className="profile-pic" src={props.dogPic} />
+            <img className="profile-pic" src={props.currentDog.img} />
           </Col>
           <Col className="content-col">
             <div>
               <p className="name">
-                {props.name}
-                <span className="age"> - {props.age}</span>
+                {props.currentDog.name}
+                <span className="age"> - {props.currentDog.age}</span>
               </p>
             </div>
 
-            <p className="bio">{props.bio}</p>
-            <ButtonBar createProfile={props.createProfile} />
+            <p className="bio">{props.currentDog.bio}</p>
+            <ButtonBar
+              currentDog={props.currentDog}
+              handleLike={props.handleLike}
+              handleReject={props.handleReject}
+              handleForward={props.handleForward}
+              handleBack={props.handleBack}
+            />
           </Col>
         </Row>
       </Card.Body>

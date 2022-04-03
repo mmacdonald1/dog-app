@@ -1,76 +1,154 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import DogCard from "./components/DogCard/DogCard";
 import dog from "./assets/dog.png";
+import _ from "lodash";
 
 const App = () => {
-  const [dogPic, setDogPic] = useState("");
-  const [bio, setBio] = useState("");
-  const [name, setName] = useState("");
-  const [age, setAge] = useState(0);
+  const [currentDog, setCurrentDog] = useState({});
   const [que, setQue] = useState([]);
 
-  const getDogImage = useCallback(() => {
-    fetch("https://dog.ceo/api/breeds/image/random")
-      .then((response) => response.json())
-      .then((data) => setDogPic(data.message));
-  }, [dogPic]);
+  const getDogImage = () => {
+    return fetch("https://dog.ceo/api/breeds/image/random").then((response) =>
+      response.json()
+    );
+  };
 
-  const getDadJoke = useCallback(() => {
-    fetch("https://icanhazdadjoke.com", {
+  const getDadJoke = () => {
+    return fetch("https://icanhazdadjoke.com", {
       method: "get",
       headers: {
         Accept: "application/json",
       },
-    })
-      .then((response) => response.json())
-      .then((data) => setBio(data.joke));
-  }, [bio]);
+    }).then((response) => response.json());
+  };
 
-  const getFakerInfo = useCallback(() => {
-    fetch(
+  const getFakerInfo = () => {
+    return fetch(
       "https://fakerapi.it/api/v1/persons?_quantity=1&_gender=male&_birthday_start=2005-01-01"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setName(data.data[0].firstname);
-        setAge(() => {
-          let birthYear = data.data[0].birthday.split("-")[0];
-          let currentYear = new Date().getFullYear();
-          return currentYear - birthYear;
-        });
-      });
-  }, [name, age]);
+    ).then((response) => response.json());
+  };
+
+  const getAge = (val3) => {
+    let birthYear = val3.data[0].birthday.split("-")[0];
+    let currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+  };
 
   const createProfile = async () => {
-    getDogImage();
-    getDadJoke();
-    getFakerInfo();
-    // let [val1, val2, val3] = Promise.all([promise1, promise2, promise3]).then((values) => {
-    //   console.log(values);
-    // });
+    console.log("fire2", que);
+    let newDog = {};
+    try {
+      let [val1, val2, val3] = await Promise.all([
+        getDogImage(),
+        getDadJoke(),
+        getFakerInfo(),
+      ]);
+      newDog.id = que.length + 1;
+      newDog.img = val1.message;
+      newDog.bio = val2.joke;
+      newDog.name = val3.data[0].firstname;
+      newDog.age = getAge(val3);
+      newDog.like = false;
+      setCurrentDog(newDog);
+      setQue((que) => [...que, newDog]);
+      console.log(que);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
+    console.log("fire", que);
     createProfile();
   }, []);
+
+  const handleReject = () => {
+    const index = que.findIndex((x) => x.id === currentDog.id);
+
+    console.log(index);
+
+    setQue((que) => {
+      return [
+        ...que.slice(0, index),
+        {
+          ...que[index],
+          like: false,
+        },
+        ...que.slice(index + 1, que.length),
+      ];
+    });
+
+    setCurrentDog((currentDog) => {
+      currentDog.like = false;
+      return currentDog;
+    });
+    console.log(que);
+  };
+
+  const handleLike = () => {
+    const index = que.findIndex((x) => x.id === currentDog.id);
+
+    console.log(
+      index,
+      que.slice(0, index),
+      que[index],
+      que.slice(index + 1, que.length)
+    );
+
+    setQue((que) => {
+      return [
+        ...que.slice(0, index),
+        {
+          ...que[index],
+          like: true,
+        },
+        ...que.slice(index + 1, que.length),
+      ];
+    });
+
+    setCurrentDog((currentDog) => {
+      currentDog.like = true;
+      return currentDog;
+    });
+    console.log(que);
+    // createProfile();
+  };
+
+  const handleBack = () => {
+    const index = que.findIndex((x) => x.id === currentDog.id);
+    if (index === 0) return;
+    setCurrentDog(que[index - 1]);
+  };
+
+  const handleForward = () => {
+    const index = que.findIndex((x) => x.id === currentDog.id);
+    if (index === que.length - 1) return;
+    setCurrentDog(que[index + 1]);
+  };
 
   return (
     <div className="app-container">
       <div className="title-div">
         <h3 className="title-text">Dog Tinder</h3>
-        <img className="dog-icon" src={dog} />
-      </div>
-      <div className="counts">
-        <p>Likes:{}</p>
+        <img className="dog-icon" src={dog} onClick={createProfile} />
       </div>
       <DogCard
-        dogPic={dogPic}
-        bio={bio}
-        name={name}
-        age={age}
-        createProfile={createProfile}
+        currentDog={currentDog}
+        handleLike={handleLike}
+        handleBack={handleBack}
+        handleForward={handleForward}
+        handleReject={handleReject}
       />
+      {/* <ul>
+        {que.map((dog) => {
+          return (
+            <li>
+              {dog.name} {dog.id} {dog.like ? "yes" : "no"}
+            </li>
+          );
+        })}
+      </ul> */}
     </div>
   );
 };

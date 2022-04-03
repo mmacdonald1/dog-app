@@ -1,7 +1,10 @@
 .heart-icon,
 .close-icon,
-.undo-icon {
+.redo-icon {
   width: 30px;
+}
+.undo-icon {
+  width: 29px;
 }
 
 .button-div {
