@@ -2,7 +2,7 @@
 
 Hello Inspire Team! For this app I used 3 apis to create dog tinder profiles. One to obtain random dog images, another for fake person data, and the last for dad jokes. This tinder allows you to like, unlike, and move between the dogs you have seen. I hope you enjoy it.
 
-See it live:
+See it live: https://dog-tinder-app-2.herokuapp.com/
 
 ## Getting Started
 
