@@ -8,6 +8,7 @@ const App = () => {
   const [currentDog, setCurrentDog] = useState({});
   const [que, setQue] = useState([]);
 
+  // API requests
   const getDogImage = () => {
     return fetch("https://dog.ceo/api/breeds/image/random").then((response) =>
       response.json()
@@ -29,6 +30,7 @@ const App = () => {
     ).then((response) => response.json());
   };
 
+  // helper functions
   const getAge = (val3) => {
     let birthYear = val3.data[0].birthday.split("-")[0];
     let currentYear = new Date().getFullYear();
@@ -36,38 +38,37 @@ const App = () => {
   };
 
   const createProfile = async () => {
-    console.log("fire2", que);
-    let newDog = {};
     try {
+      //get all values from APIs
       let [val1, val2, val3] = await Promise.all([
         getDogImage(),
         getDadJoke(),
         getFakerInfo(),
       ]);
-      newDog.id = que.length + 1;
-      newDog.img = val1.message;
-      newDog.bio = val2.joke;
-      newDog.name = val3.data[0].firstname;
-      newDog.age = getAge(val3);
-      newDog.like = false;
+
+      //create dog object and set to state
+      let newDog = {
+        id: que.length + 1,
+        img: val1.message,
+        bio: val2.joke,
+        name: val3.data[0].firstname,
+        age: getAge(val3),
+        like: false,
+      };
       setCurrentDog(newDog);
+
+      //add dog to que
       setQue((que) => [...que, newDog]);
-      console.log(que);
     } catch (err) {
       console.log(err);
     }
   };
 
-  useEffect(() => {
-    console.log("fire", que);
-    createProfile();
-  }, []);
-
   const handleReject = () => {
+    //find current dog in que by index
     const index = que.findIndex((x) => x.id === currentDog.id);
 
-    console.log(index);
-
+    //copy each part of the array and change the current dog like value in the que
     setQue((que) => {
       return [
         ...que.slice(0, index),
@@ -79,23 +80,21 @@ const App = () => {
       ];
     });
 
+    //update current dog
     setCurrentDog((currentDog) => {
       currentDog.like = false;
       return currentDog;
     });
-    console.log(que);
+
+    //trigger creation of next dog
+    createProfile();
   };
 
   const handleLike = () => {
+    //find current dog in que by index
     const index = que.findIndex((x) => x.id === currentDog.id);
 
-    console.log(
-      index,
-      que.slice(0, index),
-      que[index],
-      que.slice(index + 1, que.length)
-    );
-
+    //copy each part of the array and change the current dog like value in the que
     setQue((que) => {
       return [
         ...que.slice(0, index),
@@ -107,31 +106,44 @@ const App = () => {
       ];
     });
 
+    //update current dog
     setCurrentDog((currentDog) => {
       currentDog.like = true;
       return currentDog;
     });
-    console.log(que);
-    // createProfile();
+
+    //trigger creation of next dog
+    createProfile();
   };
 
   const handleBack = () => {
+    //find current dog in que by index
     const index = que.findIndex((x) => x.id === currentDog.id);
+    //if first in que return
     if (index === 0) return;
+    //else set to previous dog
     setCurrentDog(que[index - 1]);
   };
 
   const handleForward = () => {
+    //find current dog in que by index
     const index = que.findIndex((x) => x.id === currentDog.id);
+    //if last in que return
     if (index === que.length - 1) return;
+    //else set to next dog
     setCurrentDog(que[index + 1]);
   };
+
+  //on render create dog
+  useEffect(() => {
+    createProfile();
+  }, []);
 
   return (
     <div className="app-container">
       <div className="title-div">
         <h3 className="title-text">Dog Tinder</h3>
-        <img className="dog-icon" src={dog} onClick={createProfile} />
+        <img className="dog-icon" src={dog} />
       </div>
       <DogCard
         currentDog={currentDog}
@@ -140,15 +152,6 @@ const App = () => {
         handleForward={handleForward}
         handleReject={handleReject}
       />
-      {/* <ul>
-        {que.map((dog) => {
-          return (
-            <li>
-              {dog.name} {dog.id} {dog.like ? "yes" : "no"}
-            </li>
-          );
-        })}
-      </ul> */}
     </div>
   );
 };
